@@ -121,3 +121,7 @@ This build normalises existing Firestore role values such as `Franchisor` / `Fra
 
 ## Audits clean build
 The Audits page has been rebuilt with a self-contained, defensive implementation to avoid the previous module initialisation/loading failure. Existing Firestore collections and data remain compatible.
+
+
+## Audits standalone replacement
+The Audits page has been rebuilt as a standalone Firestore module. It does not initialise Firebase Storage, Actions or Evidence code. It only depends on Firebase Authentication, Firestore and the existing common shell. The script URL has a cache-busting version query.

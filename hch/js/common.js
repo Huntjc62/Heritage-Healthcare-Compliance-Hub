@@ -26,7 +26,16 @@ export function setupShell(requiredRole=null, onReady=()=>{}) {
       if(loading) loading.classList.add("hidden");
       if(app) app.classList.remove("hidden");
       try {
+        try {
         await onReady(profile);
+      } catch (readyError) {
+        console.error("Page initialisation failed:", readyError);
+        const box=document.querySelector(".page-error");
+        if(box){
+          box.textContent=readyError.message || "This page could not be loaded.";
+          box.classList.remove("hidden");
+        }
+      }
       } catch (readyError) {
         console.error("Page initialisation failed:", readyError);
         const box=document.querySelector(".page-error");
