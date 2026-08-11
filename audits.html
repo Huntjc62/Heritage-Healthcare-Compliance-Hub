@@ -40,7 +40,7 @@
       <h3>Audit performance</h3>
       <p class="muted">Track the five compliance topics and the four minimum audits expected for every office.</p>
     </div>
-    <button id="createAudit" class="btn primary head-office-only hidden">+ Add an audit</button>
+    <div class="panel-heading-actions"><button id="scheduleAudit" class="btn secondary head-office-only hidden">+ Set a schedule</button><button id="createAudit" class="btn primary head-office-only hidden">+ Add an audit</button></div>
   </div>
 
   <div class="audit-overview-grid">
@@ -72,6 +72,22 @@
 <section class="panel">
   <div class="panel-heading">
     <div>
+      <p class="eyebrow">AUDIT SCHEDULE</p>
+      <h3>Upcoming and overdue audits</h3>
+      <p class="muted">Track when each audit is due, how often it should happen and whether it is scheduled, in progress, completed or overdue.</p>
+    </div>
+    <div id="scheduleOfficeFilterWrap" class="audit-filter hidden">
+      <label for="scheduleOfficeFilter">Office</label>
+      <select id="scheduleOfficeFilter"><option value="all">All offices</option></select>
+    </div>
+  </div>
+  <div id="scheduleSummary" class="schedule-summary-grid"></div>
+  <div id="scheduleList" class="schedule-list"></div>
+</section>
+
+<section class="panel">
+  <div class="panel-heading">
+    <div>
       <p class="eyebrow">AUDIT REGISTER</p>
       <h3>Completed audits</h3>
       <p class="muted">Each completed audit records who completed it, when it was completed, its score and any future changes or notes.</p>
@@ -82,6 +98,29 @@
     </div>
   </div>
   <div id="auditList" class="audit-register"></div>
+</section>
+
+<section class="panel">
+  <div class="panel-heading">
+    <div>
+      <p class="eyebrow">COMPLIANCE TREND</p>
+      <h3>Performance over time</h3>
+      <p class="muted">See how the selected office or network has moved over successive audits.</p>
+    </div>
+    <div class="audit-filter">
+      <label for="trendTopicFilter">Measure</label>
+      <select id="trendTopicFilter">
+        <option value="overall">Overall compliance</option>
+        <option value="marketing">Marketing</option>
+        <option value="staff">Staff</option>
+        <option value="documentation">Documentation</option>
+        <option value="compliance">Compliance</option>
+        <option value="quality-governance">Quality & Governance</option>
+      </select>
+    </div>
+  </div>
+  <div id="trendMeta" class="trend-meta"></div>
+  <div id="trendChart" class="trend-chart"></div>
 </section>
 
 <section class="panel">
@@ -176,6 +215,30 @@
   </div>
 </div>
 
+<!-- Schedule modal -->
+<div id="scheduleModal" class="modal hidden">
+  <div class="modal-card modal-large">
+    <button class="modal-close" id="closeScheduleModal" aria-label="Close">×</button>
+    <p class="eyebrow">AUDIT SCHEDULE</p>
+    <h3>Set or update an audit schedule</h3>
+    <p class="muted modal-intro">Set the expected frequency and next due date for a franchise audit. Head Office can also mark an audit as in progress.</p>
+    <form id="scheduleForm">
+      <input id="scheduleId" type="hidden">
+      <div class="form-grid">
+        <label>Franchise office<select id="scheduleOffice" required></select></label>
+        <label>Audit type<select id="scheduleType" required></select></label>
+      </div>
+      <div class="form-grid">
+        <label>Frequency<select id="scheduleFrequency" required></select></label>
+        <label>Next due date<input id="scheduleDueDate" type="date" required></label>
+      </div>
+      <label>Status<select id="scheduleStatus" required></select></label>
+      <div class="audit-form-tip"><strong>Recommended starting point</strong><span>Marketing, Staff, Documentation and Compliance are set to quarterly by default. Quality &amp; Governance is set to annual.</span></div>
+      <div class="modal-actions"><button type="button" class="btn secondary" id="cancelSchedule">Cancel</button><button class="btn primary" id="saveScheduleButton">Save schedule</button></div>
+    </form>
+  </div>
+</div>
+
 <!-- Audit details modal -->
 <div id="detailsModal" class="modal hidden">
   <div class="modal-card modal-large">
@@ -187,7 +250,7 @@
       <div><span>Office</span><strong id="detailsOffice">—</strong></div>
       <div><span>Completed by</span><strong id="detailsCompletedBy">—</strong></div>
       <div><span>Date completed</span><strong id="detailsDate">—</strong></div>
-      <div><span>Status</span><strong>Completed</strong></div>
+      <div><span>Movement</span><strong id="detailsChange">—</strong></div>
     </div>
     <div class="audit-notes-box">
       <p class="eyebrow">FUTURE CHANGES / NOTES</p>
