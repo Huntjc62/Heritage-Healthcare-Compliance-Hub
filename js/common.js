@@ -33,7 +33,25 @@ export function isHeadOfficeRole(value) {
   return normaliseRole(value) === "franchisor";
 }
 
+function removeEvidenceNavigation() {
+  document.querySelectorAll("a,button").forEach(element => {
+    const href = String(element.getAttribute("href") || "").toLowerCase();
+    const label = String(element.textContent || "").trim().toLowerCase();
+
+    if (
+      href.includes("evidence") ||
+      label === "evidence" ||
+      label.startsWith("evidence ")
+    ) {
+      // Only remove navigation/action links labelled Evidence.
+      element.remove();
+    }
+  });
+}
+
 export function setupShell(requiredRole=null, onReady=()=>{}) {
+  removeEvidenceNavigation();
+
   const loading = document.getElementById("appLoading");
   const app = document.getElementById("app");
 
@@ -72,6 +90,7 @@ export function setupShell(requiredRole=null, onReady=()=>{}) {
       }
 
       window.currentUserProfile = profile;
+      removeEvidenceNavigation();
 
       document.querySelectorAll("[data-user-name]")
         .forEach(e => e.textContent = profile.name || user.email);

@@ -141,3 +141,7 @@ The Dashboard independently reads the signed-in Firebase Auth UID's `users/{uid}
 
 ## Evidence temporarily removed
 Evidence has been removed from the site navigation for all roles. The old evidence URL redirects to the dashboard so users cannot access the retired Evidence interface.
+
+
+## Evidence navigation removal — final
+All visible Evidence navigation has been removed. The shared shell also removes any legacy Evidence navigation link at runtime, so old cached/sidebar markup cannot display it. The Evidence JavaScript module is no longer included.
