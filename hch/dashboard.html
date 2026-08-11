@@ -1,0 +1,29 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Dashboard | Heritage Compliance Hub</title><link rel="stylesheet" href="css/styles.css"></head><body>
+<div id="appLoading" class="page-loading"><div class="spinner"></div><p>Loading dashboard…</p></div><div id="app" class="app hidden"><aside class="sidebar">
+<div class="sidebar-brand"><div class="brand-mark">H</div><div><strong>Heritage</strong><span>Compliance Hub</span></div></div>
+<nav>
+<a class="nav-link active" href="dashboard.html"><span>⌂</span> Dashboard</a>
+<a class="nav-link " href="audits.html"><span>✓</span> Audits</a>
+<a class="nav-link " href="actions.html"><span>!</span> Actions <em id="actionBadge">0</em></a>
+<a class="nav-link " href="evidence.html"><span>▣</span> Evidence</a>
+<a class="nav-link " href="reports.html"><span>▤</span> Reports</a>
+<a class="nav-link head-office-only hidden " href="offices.html"><span>⌂</span> Offices</a>
+<a class="nav-link head-office-only hidden " href="users.html"><span>♙</span> Users</a></nav>
+<div class="sidebar-bottom"><button data-logout class="logout-button">↪ Sign out</button></div>
+</aside>
+<main class="main-content">
+<header class="topbar"><div><p class="eyebrow">HEAD OFFICE</p><h1>Network overview</h1></div>
+<div class="user-chip"><div class="avatar" data-user-avatar>H</div><div><strong data-user-name>User</strong><small data-user-role>Loading…</small></div></div></header>
+<div class="alert error hidden page-error"></div>
+<section id="franchiseView" class="hidden">
+<div class="hero-card"><div><p class="eyebrow">YOUR OFFICE</p><h2 id="officeName">Your Franchise</h2><p class="muted">Here is your current compliance position.</p></div><div class="score-ring"><span id="officeScore">—</span><small>Overall</small></div></div>
+<div class="stat-grid five"><div class="stat-card"><span>Documentation</span><strong id="documentationScore">—</strong><small>Compliance</small></div><div class="stat-card"><span>Staff</span><strong id="staffScore">—</strong><small>Compliance</small></div><div class="stat-card"><span>Compliance</span><strong id="complianceScore">—</strong><small>Compliance</small></div><div class="stat-card"><span>Marketing</span><strong id="marketingScore">—</strong><small>Compliance</small></div><div class="stat-card"><span>Quality & Governance</span><strong id="qualityScore">—</strong><small>Additional topic</small></div></div>
+<div class="quick-grid"><a href="audits.html" class="quick-card"><b>✓</b><strong>Start an audit</strong><span>Complete your monthly compliance checklist</span></a><a href="actions.html" class="quick-card"><b>!</b><strong>View actions</strong><span>See outstanding compliance actions</span></a><a href="evidence.html" class="quick-card"><b>▣</b><strong>Evidence register</strong><span>Record supporting evidence</span></a></div>
+<div class="content-grid"><section class="panel"><div class="panel-heading"><div><p class="eyebrow">AUDITS</p><h3>Recent audits</h3></div><a href="audits.html">View all</a></div><div class="dashboard-audit-progress"><div><span>Minimum audits completed</span><strong id="dashboardAuditCompletion">0 / 4</strong></div><div class="progress-track"><span id="dashboardAuditProgressBar"></span></div></div><div id="franchiseAudits" class="list"></div></section><section class="panel"><div class="panel-heading"><div><p class="eyebrow">NEXT AUDITS</p><h3>Audit schedule</h3></div><a href="audits.html">Manage</a></div><div id="franchiseSchedule" class="list"></div></section><section class="panel"><div class="panel-heading"><div><p class="eyebrow">ACTIONS</p><h3>Items requiring attention</h3></div><a href="actions.html">View all</a></div><div id="franchiseActions" class="list"></div></section></div>
+</section>
+<section id="headOfficeView" class="hidden">
+<div class="hero-card"><div><p class="eyebrow">HEAD OFFICE</p><h2>Heritage Healthcare Network</h2><p class="muted">Network-wide compliance overview.</p></div><div class="network-score"><strong id="networkScore">—</strong><span>Average compliance</span></div></div>
+<div class="stat-grid four"><div class="stat-card"><span>Offices</span><strong id="officeCount">—</strong><small>Active offices</small></div><div class="stat-card"><span>Active users</span><strong id="userCount">—</strong><small>Registered users</small></div><div class="stat-card"><span>Open actions</span><strong id="openActionCount">—</strong><small>Across network</small></div><div class="stat-card"><span>Overdue audits</span><strong id="overdueAuditCount">—</strong><small>Need attention</small></div></div>
+<div class="quick-grid"><a href="offices.html" class="quick-card"><b>⌂</b><strong>Manage offices</strong><span>Add and update franchise offices</span></a><a href="users.html" class="quick-card"><b>♙</b><strong>Manage users</strong><span>View user profiles and office access</span></a><a href="reports.html" class="quick-card"><b>▤</b><strong>Network reports</strong><span>Review network performance</span></a></div>
+<section class="panel"><div class="panel-heading"><div><p class="eyebrow">NETWORK PERFORMANCE</p><h3>Franchise offices</h3></div><a href="offices.html">Manage offices</a></div><div class="table-wrap"><table><thead><tr><th>Office</th><th>Score</th><th>Audits</th><th>Open actions</th><th>Status</th></tr></thead><tbody id="officeTableBody"></tbody></table></div></section><section class="panel"><div class="panel-heading"><div><p class="eyebrow">AUDIT SCHEDULE</p><h3>Network audit status</h3></div><a href="audits.html">View schedules</a></div><div id="networkAuditSchedule" class="schedule-dashboard-grid"></div></section>
+</section></main></div><script type="module" src="js/dashboard.js"></script></body></html>
