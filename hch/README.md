@@ -125,3 +125,7 @@ The Audits page has been rebuilt with a self-contained, defensive implementation
 
 ## Audits standalone replacement
 The Audits page has been rebuilt as a standalone Firestore module. It does not initialise Firebase Storage, Actions or Evidence code. It only depends on Firebase Authentication, Firestore and the existing common shell. The script URL has a cache-busting version query.
+
+
+## Head Office Staff role
+The Firestore role value `Head Office Staff` is now treated as the same application role as `franchisor`. It receives the same Head Office dashboard, Audits, Actions, Evidence, Reports, Offices and Users access. The original Firestore value is retained, so the account can still be identified as Head Office Staff in the Users collection.

@@ -1,10 +1,38 @@
 rules_version = '2';
 service firebase.storage {
+
   match /b/{bucket}/o {
-    function signedIn(){ return request.auth != null; }
-    function userProfile(){ return firestore.get(/databases/(default)/documents/users/$(request.auth.uid)).data; }
-    function headOffice(){ return signedIn() && (userProfile().role == "franchisor" || userProfile().role == "Franchisor"); }
-    function ownOffice(officeId){ return signedIn() && (userProfile().role == "franchisee" || userProfile().role == "Franchisee") && userProfile().officeId == officeId; }
+
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function userProfile() {
+      return firestore.get(
+        /databases/(default)/documents/users/$(request.auth.uid)
+      ).data;
+    }
+
+    // Head Office Admin/franchisor AND Head Office Staff have identical
+    // Storage access.
+    function headOffice() {
+      return signedIn() &&
+        (
+          userProfile().role == "franchisor" ||
+          userProfile().role == "Franchisor" ||
+          userProfile().role == "Head Office Staff" ||
+          userProfile().role == "head office staff"
+        );
+    }
+
+    function ownOffice(officeId) {
+      return signedIn() &&
+        (
+          userProfile().role == "franchisee" ||
+          userProfile().role == "Franchisee"
+        ) &&
+        userProfile().officeId == officeId;
+    }
 
     match /evidence/{officeId}/{fileName} {
       allow read: if headOffice() || ownOffice(officeId);
