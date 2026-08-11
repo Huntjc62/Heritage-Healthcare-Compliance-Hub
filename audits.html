@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Audits | Heritage Compliance Hub</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div id="appLoading" class="page-loading"><div class="spinner"></div><p>Loading audits…</p></div>
+  <div id="app" class="app hidden">
+    <aside class="sidebar">
+      <div class="sidebar-brand"><div class="brand-mark">H</div><div><strong>Heritage</strong><span>Compliance Hub</span></div></div>
+      <nav>
+        <a class="nav-link" href="dashboard.html"><span>⌂</span> Dashboard</a>
+        <a class="nav-link active" href="audits.html"><span>✓</span> Audits</a>
+        <a class="nav-link" href="#"><span>!</span> Actions</a>
+        <a class="nav-link" href="#"><span>▣</span> Evidence</a>
+        <a class="nav-link" href="#"><span>▤</span> Reports</a>
+      </nav>
+      <div class="sidebar-bottom"><button id="logoutButton" class="logout-button">↪ Sign out</button></div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <div><p class="eyebrow">COMPLIANCE</p><h1>Audits</h1></div>
+        <div class="user-chip"><div class="avatar" id="userAvatar">H</div><div><strong id="userName">User</strong><small id="userRole">Loading…</small></div></div>
+      </header>
+
+      <div id="auditError" class="alert error hidden"></div>
+
+      <section class="panel">
+        <div class="panel-heading">
+          <div><p class="eyebrow">AUDIT LIST</p><h3 id="auditHeading">Your audits</h3></div>
+          <button id="seedAuditButton" class="btn primary hidden">Create demo audit</button>
+        </div>
+        <div id="auditList" class="audit-grid"></div>
+      </section>
+
+      <section id="auditBuilder" class="panel hidden">
+        <div class="panel-heading"><div><p class="eyebrow">AUDIT</p><h3 id="builderTitle">Monthly Franchise Compliance Audit</h3></div></div>
+        <form id="auditForm">
+          <div id="auditQuestions"></div>
+          <div class="builder-footer">
+            <div><strong>Score: <span id="liveScore">0%</span></strong><small>Not applicable items are excluded.</small></div>
+            <button class="btn primary" type="submit">Submit audit</button>
+          </div>
+        </form>
+      </section>
+    </main>
+  </div>
+  <script type="module" src="js/audits.js"></script>
+</body>
+</html>

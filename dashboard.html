@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard | Heritage Compliance Hub</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div id="appLoading" class="page-loading"><div class="spinner"></div><p>Loading your dashboard…</p></div>
+
+  <div id="app" class="app hidden">
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <div class="brand-mark">H</div>
+        <div><strong>Heritage</strong><span>Compliance Hub</span></div>
+      </div>
+
+      <nav>
+        <a class="nav-link active" href="dashboard.html"><span>⌂</span> Dashboard</a>
+        <a class="nav-link" href="audits.html"><span>✓</span> Audits</a>
+        <a class="nav-link" href="#"><span>!</span> Actions <em id="actionBadge">0</em></a>
+        <a class="nav-link" href="#"><span>▣</span> Evidence</a>
+        <a class="nav-link" href="#"><span>▤</span> Reports</a>
+        <a id="officesNav" class="nav-link hidden" href="#"><span>⌂</span> Offices</a>
+        <a id="usersNav" class="nav-link hidden" href="#"><span>♙</span> Users</a>
+      </nav>
+
+      <div class="sidebar-bottom">
+        <button id="logoutButton" class="logout-button">↪ Sign out</button>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow" id="roleLabel">DASHBOARD</p>
+          <h1 id="pageTitle">Good morning</h1>
+        </div>
+        <div class="user-chip">
+          <div class="avatar" id="userAvatar">H</div>
+          <div><strong id="userName">User</strong><small id="userRole">Loading…</small></div>
+        </div>
+      </header>
+
+      <div id="dashboardError" class="alert error hidden"></div>
+
+      <section id="franchiseView" class="hidden">
+        <div class="hero-card">
+          <div>
+            <p class="eyebrow">YOUR OFFICE</p>
+            <h2 id="officeName">Your Franchise</h2>
+            <p class="muted">Here is your current compliance position.</p>
+          </div>
+          <div class="score-ring"><span id="officeScore">—</span><small>Overall</small></div>
+        </div>
+
+        <div class="stat-grid four">
+          <div class="stat-card"><span>Documentation</span><strong id="documentationScore">—</strong><small>Compliance</small></div>
+          <div class="stat-card"><span>Staff</span><strong id="staffScore">—</strong><small>Compliance</small></div>
+          <div class="stat-card"><span>Compliance</span><strong id="complianceScore">—</strong><small>Compliance</small></div>
+          <div class="stat-card"><span>Marketing</span><strong id="marketingScore">—</strong><small>Compliance</small></div>
+        </div>
+
+        <div class="content-grid">
+          <section class="panel">
+            <div class="panel-heading"><div><p class="eyebrow">AUDITS</p><h3>Recent audits</h3></div><a href="audits.html">View all</a></div>
+            <div id="franchiseAudits" class="list"></div>
+          </section>
+          <section class="panel">
+            <div class="panel-heading"><div><p class="eyebrow">ACTIONS</p><h3>Items requiring attention</h3></div></div>
+            <div id="franchiseActions" class="list"></div>
+          </section>
+        </div>
+      </section>
+
+      <section id="headOfficeView" class="hidden">
+        <div class="hero-card">
+          <div>
+            <p class="eyebrow">HEAD OFFICE</p>
+            <h2>Heritage Healthcare Network</h2>
+            <p class="muted">Network-wide compliance overview.</p>
+          </div>
+          <div class="network-score"><strong id="networkScore">—</strong><span>Average compliance</span></div>
+        </div>
+
+        <div class="stat-grid four">
+          <div class="stat-card"><span>Offices</span><strong id="officeCount">—</strong><small>Active offices</small></div>
+          <div class="stat-card"><span>Active users</span><strong id="userCount">—</strong><small>Registered users</small></div>
+          <div class="stat-card"><span>Open actions</span><strong id="openActionCount">—</strong><small>Across network</small></div>
+          <div class="stat-card"><span>Overdue</span><strong id="overdueActionCount">—</strong><small>Need attention</small></div>
+        </div>
+
+        <section class="panel">
+          <div class="panel-heading"><div><p class="eyebrow">NETWORK PERFORMANCE</p><h3>Franchise offices</h3></div></div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Office</th><th>Score</th><th>Audits</th><th>Open actions</th><th>Status</th></tr></thead>
+              <tbody id="officeTableBody"></tbody>
+            </table>
+          </div>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <script type="module" src="js/dashboard.js"></script>
+</body>
+</html>

@@ -1,0 +1,61 @@
+{
+  "_instructions": "These are example documents to create manually in Firebase Firestore. Document IDs can be changed.",
+  "offices": {
+    "birmingham-south": {
+      "name": "Birmingham South",
+      "location": "Birmingham",
+      "complianceScore": 87,
+      "auditCompletion": 90,
+      "openActions": 3,
+      "scores": {
+        "documentation": 94,
+        "staff": 91,
+        "compliance": 88,
+        "marketing": 82
+      },
+      "active": true
+    },
+    "bristol": {
+      "name": "Bristol",
+      "location": "Bristol",
+      "complianceScore": 96,
+      "auditCompletion": 100,
+      "openActions": 1,
+      "scores": {
+        "documentation": 98,
+        "staff": 96,
+        "compliance": 95,
+        "marketing": 94
+      },
+      "active": true
+    },
+    "milton-keynes": {
+      "name": "Milton Keynes",
+      "location": "Milton Keynes",
+      "complianceScore": 94,
+      "auditCompletion": 92,
+      "openActions": 2,
+      "scores": {
+        "documentation": 95,
+        "staff": 94,
+        "compliance": 93,
+        "marketing": 91
+      },
+      "active": true
+    }
+  },
+  "users": {
+    "CREATE-AFTER-AUTH": {
+      "name": "Head Office Admin",
+      "email": "your-head-office-email@example.com",
+      "role": "franchisor",
+      "officeId": null
+    },
+    "CREATE-AFTER-AUTH-2": {
+      "name": "Birmingham South Manager",
+      "email": "your-franchisee-email@example.com",
+      "role": "franchisee",
+      "officeId": "birmingham-south"
+    }
+  }
+}
