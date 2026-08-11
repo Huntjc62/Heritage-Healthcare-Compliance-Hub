@@ -145,3 +145,9 @@ Evidence has been removed from the site navigation for all roles. The old eviden
 
 ## Evidence navigation removal — final
 All visible Evidence navigation has been removed. The shared shell also removes any legacy Evidence navigation link at runtime, so old cached/sidebar markup cannot display it. The Evidence JavaScript module is no longer included.
+
+## Heritage Healthcare branding + iPhone update
+
+This build includes the Heritage Healthcare brand palette/logo and a mobile navigation layout for iPhone/Safari. The CSS and logo URLs are versioned with a cache-busting query string so the updated branding is requested after deployment.
+
+After replacing the files in GitHub, wait for GitHub Pages to finish deploying, then open the site on the iPhone again. If Safari still shows an old page, open the site in a Private tab once; the versioned CSS/logo should then load the new branding.
