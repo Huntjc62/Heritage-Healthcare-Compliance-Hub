@@ -129,3 +129,7 @@ The Audits page has been rebuilt as a standalone Firestore module. It does not i
 
 ## Head Office Staff role
 The Firestore role value `Head Office Staff` is now treated as the same application role as `franchisor`. It receives the same Head Office dashboard, Audits, Actions, Evidence, Reports, Offices and Users access. The original Firestore value is retained, so the account can still be identified as Head Office Staff in the Users collection.
+
+
+## Cache-busted Head Office Staff build
+All page/module references to the shared role logic now use version `20260811-ho-staff-v2` so GitHub Pages/browser caching cannot continue serving the old role mapping. `Head Office Staff` is explicitly normalised to the Head Office/franchisor application role.

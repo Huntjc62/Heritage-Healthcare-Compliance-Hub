@@ -1,6 +1,6 @@
 import {db} from "./firebase.js";
 import {collection,getDocs,setDoc,doc,serverTimestamp} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
-import {setupShell,esc,scoreStatus} from "./common.js";
+import {setupShell,esc,scoreStatus} from "./common.js?v=20260811-ho-staff-v2";
 let offices=[];
 setupShell("franchisor",async()=>{newOffice.onclick=()=>open();closeOffice.onclick=close;officeForm.addEventListener("submit",save);await load();});
 async function load(){const s=await getDocs(collection(db,"offices"));offices=s.docs.map(d=>({id:d.id,...d.data()}));officeGrid.innerHTML=offices.map(o=>`<article class="office-card"><div class="office-card-top"><div class="office-icon">⌂</div>${scoreStatus(o.complianceScore)}</div><h3>${esc(o.name||o.id)}</h3><p>${esc(o.location||"Location not set")}</p><div class="office-mini"><span>Overall<strong>${o.complianceScore??0}%</strong></span><span>Audits<strong>${o.auditCompletion??0}%</strong></span><span>Actions<strong>${o.openActions??0}</strong></span></div><button class="btn secondary small edit-office" data-id="${o.id}">Edit office</button></article>`).join("")||'<div class="empty-state">No offices have been added.</div>';document.querySelectorAll(".edit-office").forEach(b=>b.onclick=()=>open(b.dataset.id));}

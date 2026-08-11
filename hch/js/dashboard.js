@@ -1,6 +1,6 @@
 import { db } from "./firebase.js";
 import { collection, getDocs, query, where, doc, getDoc } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
-import { setupShell, esc, scoreStatus, formatDate } from "./common.js";
+import { setupShell, esc, scoreStatus, formatDate } from "./common.js?v=20260811-ho-staff-v2";
 
 const REQUIRED = ["marketing", "staff", "documentation", "compliance"];
 const TOPICS = ["documentation", "staff", "compliance", "marketing", "quality-governance"];

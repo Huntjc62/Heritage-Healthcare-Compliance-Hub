@@ -21,7 +21,9 @@ service firebase.storage {
           userProfile().role == "franchisor" ||
           userProfile().role == "Franchisor" ||
           userProfile().role == "Head Office Staff" ||
-          userProfile().role == "head office staff"
+          userProfile().role == "Head Office Staff" ||
+          userProfile().role == "head office staff" ||
+          userProfile().role == "Head office staff"
         );
     }
 

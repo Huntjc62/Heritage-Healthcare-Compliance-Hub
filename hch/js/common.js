@@ -47,10 +47,13 @@ export function setupShell(requiredRole=null, onReady=()=>{}) {
       // The Firestore role remains "Head Office Staff", but the application
       // normalises it to "franchisor", giving it identical access to the
       // existing Head Office Admin/franchisor role.
+      const recognisedHeadOfficeStaff =
+        String(rawProfile.role || "").trim().toLowerCase() === "head office staff";
+
       const profile = {
         ...rawProfile,
         rawRole: rawProfile.role,
-        role: normaliseRole(rawProfile.role)
+        role: recognisedHeadOfficeStaff ? "franchisor" : normaliseRole(rawProfile.role)
       };
 
       if (requiredRole && profile.role !== requiredRole) {

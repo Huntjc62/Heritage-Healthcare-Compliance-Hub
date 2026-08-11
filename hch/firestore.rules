@@ -20,7 +20,9 @@ service cloud.firestore {
           profile().role == "franchisor" ||
           profile().role == "Franchisor" ||
           profile().role == "Head Office Staff" ||
-          profile().role == "head office staff"
+          profile().role == "Head Office Staff" ||
+          profile().role == "head office staff" ||
+          profile().role == "Head office staff"
         );
     }
 

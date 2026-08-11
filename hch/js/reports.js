@@ -1,6 +1,6 @@
 import { db } from "./firebase.js";
 import { collection, getDocs } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
-import { setupShell, esc, scoreStatus } from "./common.js";
+import { setupShell, esc, scoreStatus } from "./common.js?v=20260811-ho-staff-v2";
 
 setupShell(null, async profile => {
   const [os, as, xs] = await Promise.all([
