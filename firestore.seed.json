@@ -1,5 +1,5 @@
 {
-  "_instructions": "These are example documents to create manually in Firebase Firestore. Document IDs can be changed.",
+  "_instructions": "Example Firestore documents. Create these manually in Firebase; document IDs can be changed.",
   "offices": {
     "birmingham-south": {
       "name": "Birmingham South",

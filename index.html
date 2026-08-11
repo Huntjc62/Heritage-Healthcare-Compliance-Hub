@@ -13,44 +13,27 @@
       <p class="eyebrow">HERITAGE HEALTHCARE</p>
       <h1>Compliance Hub</h1>
       <p class="brand-copy">A simple network-wide compliance and audit platform for Heritage Healthcare.</p>
-      <div class="login-feature">
-        <span>✓</span><div><strong>Franchisor & franchisee access</strong><small>Role-based dashboards</small></div>
-      </div>
-      <div class="login-feature">
-        <span>✓</span><div><strong>Audit-ready information</strong><small>Scores, audits and actions in one place</small></div>
-      </div>
-      <div class="login-feature">
-        <span>✓</span><div><strong>Network visibility</strong><small>Head Office can see performance across offices</small></div>
-      </div>
+      <div class="login-feature"><span>✓</span><div><strong>Franchisor & franchisee access</strong><small>Role-based dashboards</small></div></div>
+      <div class="login-feature"><span>✓</span><div><strong>Audit-ready information</strong><small>Scores, audits and actions in one place</small></div></div>
+      <div class="login-feature"><span>✓</span><div><strong>Network visibility</strong><small>Head Office can see performance across offices</small></div></div>
     </section>
-
     <section class="login-card">
       <div class="mobile-brand"><div class="brand-mark">H</div></div>
       <p class="eyebrow">SECURE LOGIN</p>
       <h2>Welcome back</h2>
       <p class="muted">Sign in to your Heritage Compliance Hub account.</p>
-
       <div id="loginError" class="alert error hidden"></div>
-
       <form id="loginForm">
         <label for="email">Email address</label>
         <input id="email" type="email" autocomplete="email" placeholder="you@example.com" required>
-
         <label for="password">Password</label>
         <input id="password" type="password" autocomplete="current-password" placeholder="Enter your password" required>
-
         <button class="btn primary full" type="submit" id="loginButton">Sign in</button>
       </form>
-
       <button class="text-button" id="forgotPassword">Forgotten your password?</button>
-
-      <div class="demo-box">
-        <strong>First-time setup</strong>
-        <p>This V1 uses Firebase Authentication. Create your users in Firebase, then add their role and office in Firestore.</p>
-      </div>
+      <div class="demo-box"><strong>Firebase connected</strong><p>Use an account created in Firebase Authentication with a matching Firestore user profile.</p></div>
     </section>
   </main>
-
   <script type="module" src="js/login.js"></script>
 </body>
 </html>
