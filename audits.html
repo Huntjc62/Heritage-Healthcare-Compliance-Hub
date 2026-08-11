@@ -1,18 +1,163 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Audits | Heritage Compliance Hub</title><link rel="stylesheet" href="css/styles.css"></head><body><div id="appLoading" class="page-loading"><div class="spinner"></div><p>Loading audits…</p></div><div id="app" class="app hidden"><aside class="sidebar">
-<div class="sidebar-brand"><div class="brand-mark">H</div><div><strong>Heritage</strong><span>Compliance Hub</span></div></div>
-<nav>
-<a class="nav-link " href="dashboard.html"><span>⌂</span> Dashboard</a>
-<a class="nav-link active" href="audits.html"><span>✓</span> Audits</a>
-<a class="nav-link " href="actions.html"><span>!</span> Actions <em id="actionBadge">0</em></a>
-<a class="nav-link " href="evidence.html"><span>▣</span> Evidence</a>
-<a class="nav-link " href="reports.html"><span>▤</span> Reports</a>
-<a class="nav-link head-office-only hidden " href="offices.html"><span>⌂</span> Offices</a>
-<a class="nav-link head-office-only hidden " href="users.html"><span>♙</span> Users</a></nav>
-<div class="sidebar-bottom"><button data-logout class="logout-button">↪ Sign out</button></div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Audits | Heritage Compliance Hub</title>
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<div id="appLoading" class="page-loading"><div class="spinner"></div><p>Loading audits…</p></div>
+
+<div id="app" class="app hidden">
+<aside class="sidebar">
+  <div class="sidebar-brand"><div class="brand-mark">H</div><div><strong>Heritage</strong><span>Compliance Hub</span></div></div>
+  <nav>
+    <a class="nav-link " href="dashboard.html"><span>⌂</span> Dashboard</a>
+    <a class="nav-link active" href="audits.html"><span>✓</span> Audits</a>
+    <a class="nav-link " href="actions.html"><span>!</span> Actions <em id="actionBadge">0</em></a>
+    <a class="nav-link " href="evidence.html"><span>▣</span> Evidence</a>
+    <a class="nav-link " href="reports.html"><span>▤</span> Reports</a>
+    <a class="nav-link head-office-only hidden " href="offices.html"><span>⌂</span> Offices</a>
+    <a class="nav-link head-office-only hidden " href="users.html"><span>♙</span> Users</a>
+  </nav>
+  <div class="sidebar-bottom"><button data-logout class="logout-button">↪ Sign out</button></div>
 </aside>
+
 <main class="main-content">
-<header class="topbar"><div><p class="eyebrow">COMPLIANCE HUB</p><h1>Audits</h1></div>
-<div class="user-chip"><div class="avatar" data-user-avatar>H</div><div><strong data-user-name>User</strong><small data-user-role>Loading…</small></div></div></header>
+<header class="topbar">
+  <div><p class="eyebrow">COMPLIANCE MANAGEMENT</p><h1>Audits</h1></div>
+  <div class="user-chip"><div class="avatar" data-user-avatar>H</div><div><strong data-user-name>User</strong><small data-user-role>Loading…</small></div></div>
+</header>
+
 <div class="alert error hidden page-error"></div>
-<section class="panel"><div class="panel-heading"><div><p class="eyebrow">COMPLIANCE</p><h3>Audit register</h3><p class="muted">Create, assign and complete the monthly compliance checklist.</p></div><button id="createAudit" class="btn primary head-office-only hidden">Create audit</button></div><div id="auditList" class="audit-grid"></div></section>
-<section id="auditBuilder" class="panel hidden"><div class="panel-heading"><div><p class="eyebrow">MONTHLY AUDIT</p><h3>Franchise Compliance Audit</h3></div></div><form id="auditForm"><div id="auditQuestions"></div><div class="builder-footer"><div><strong>Score: <span id="liveScore">0%</span></strong><small>Not applicable items are excluded.</small></div><button class="btn primary">Submit audit</button></div></form></section></main></div><script type="module" src="js/audits.js"></script></body></html>
+<div id="auditMessage" class="alert success hidden"></div>
+
+<section class="panel">
+  <div class="panel-heading">
+    <div>
+      <p class="eyebrow">FRANCHISE COMPLIANCE</p>
+      <h3>Audit performance</h3>
+      <p class="muted">Track the five compliance topics and the four minimum audits expected for every office.</p>
+    </div>
+    <button id="createAudit" class="btn primary head-office-only hidden">+ Add an audit</button>
+  </div>
+
+  <div class="audit-overview-grid">
+    <div class="audit-overview-card featured">
+      <span>Overall compliance</span>
+      <strong id="overallScore">—</strong>
+      <small id="overallSubtext">Based on completed audit topics</small>
+    </div>
+    <div class="audit-overview-card">
+      <span>Minimum audits completed</span>
+      <strong id="completedRequired">0 / 4</strong>
+      <small id="completionPercent">0% complete</small>
+    </div>
+    <div class="audit-overview-card">
+      <span>Topics scored</span>
+      <strong id="topicsScored">0 / 5</strong>
+      <small>Marketing, Staff, Documentation, Compliance & Quality</small>
+    </div>
+    <div class="audit-overview-card">
+      <span>Audits recorded</span>
+      <strong id="auditCount">0</strong>
+      <small>Completed audits in the register</small>
+    </div>
+  </div>
+
+  <div class="topic-score-grid" id="topicScoreGrid"></div>
+</section>
+
+<section class="panel">
+  <div class="panel-heading">
+    <div>
+      <p class="eyebrow">AUDIT REGISTER</p>
+      <h3>Completed audits</h3>
+      <p class="muted">Each completed audit records who completed it, when it was completed, its score and any future changes or notes.</p>
+    </div>
+    <div id="officeFilterWrap" class="audit-filter hidden">
+      <label for="officeFilter">Office</label>
+      <select id="officeFilter"><option value="all">All offices</option></select>
+    </div>
+  </div>
+  <div id="auditList" class="audit-register"></div>
+</section>
+
+<!-- Add audit modal -->
+<div id="auditModal" class="modal hidden">
+  <div class="modal-card modal-large">
+    <button class="modal-close" id="closeAuditModal" aria-label="Close">×</button>
+    <p class="eyebrow">NEW AUDIT</p>
+    <h3>Add a completed franchise audit</h3>
+    <p class="muted modal-intro">Choose the audit topic and record the result. Saving the audit automatically updates the office's compliance profile.</p>
+
+    <form id="auditForm">
+      <div class="form-grid">
+        <label>Franchise office
+          <select id="auditOffice" required></select>
+        </label>
+        <label>Audit type
+          <select id="auditType" required></select>
+        </label>
+      </div>
+
+      <div class="form-grid">
+        <label>Completed by
+          <input id="completedBy" type="text" placeholder="e.g. Josh Hunt" required>
+        </label>
+        <label>Date completed
+          <input id="completedDate" type="date" required>
+        </label>
+      </div>
+
+      <label>Compliance score
+        <div class="score-input-row">
+          <input id="auditScore" type="range" min="0" max="100" value="0">
+          <output id="auditScoreOutput">0%</output>
+        </div>
+        <input id="auditScoreNumber" type="number" min="0" max="100" value="0" required>
+      </label>
+
+      <label>Future changes / notes
+        <textarea id="auditNotes" rows="5" placeholder="Record improvements required, future changes, observations or follow-up notes…"></textarea>
+      </label>
+
+      <div class="audit-form-tip">
+        <strong>What happens when you save?</strong>
+        <span>The audit is added to the register, the latest score for that topic is updated on the office profile, and the office's overall compliance and audit completion percentages are recalculated.</span>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="btn secondary" id="cancelAudit">Cancel</button>
+        <button class="btn primary" id="saveAuditButton">Save audit</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Audit details modal -->
+<div id="detailsModal" class="modal hidden">
+  <div class="modal-card modal-large">
+    <button class="modal-close" id="closeDetailsModal" aria-label="Close">×</button>
+    <p class="eyebrow" id="detailsType">AUDIT</p>
+    <h3 id="detailsTitle">Audit details</h3>
+    <div class="audit-detail-score"><span id="detailsScore">—</span><small>Compliance score</small></div>
+    <div class="audit-detail-grid">
+      <div><span>Office</span><strong id="detailsOffice">—</strong></div>
+      <div><span>Completed by</span><strong id="detailsCompletedBy">—</strong></div>
+      <div><span>Date completed</span><strong id="detailsDate">—</strong></div>
+      <div><span>Status</span><strong>Completed</strong></div>
+    </div>
+    <div class="audit-notes-box">
+      <p class="eyebrow">FUTURE CHANGES / NOTES</p>
+      <p id="detailsNotes">No notes recorded.</p>
+    </div>
+  </div>
+</div>
+
+</main>
+</div>
+<script type="module" src="js/audits.js"></script>
+</body>
+</html>

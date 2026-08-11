@@ -19,8 +19,7 @@ service cloud.firestore {
     }
     match /audits/{id} {
       allow read: if headOffice() || ownOffice(resource.data.officeId);
-      allow create, delete: if headOffice();
-      allow update: if headOffice() || (ownOffice(resource.data.officeId) && request.resource.data.officeId == resource.data.officeId);
+      allow create, delete, update: if headOffice();
     }
     match /actions/{id} {
       allow read: if headOffice() || ownOffice(resource.data.officeId);
