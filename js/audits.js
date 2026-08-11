@@ -38,39 +38,46 @@ setupShell(null, async p => {
 });
 
 function bindEvents() {
-  $("createAudit").addEventListener("click", () => openAddAudit());
-  $("scheduleAudit").addEventListener("click", () => openScheduleModal());
-  $("closeAuditModal").addEventListener("click", closeAddAudit);
-  $("cancelAudit").addEventListener("click", closeAddAudit);
-  $("closeDetailsModal").addEventListener("click", closeDetails);
-  $("addAuditAction").addEventListener("click", () => openAuditActionModal(selectedAudit));
-  $("closeScheduleModal").addEventListener("click", closeScheduleModal);
-  $("cancelSchedule").addEventListener("click", closeScheduleModal);
-  $("auditForm").addEventListener("submit", saveAudit);
-  $("scheduleForm").addEventListener("submit", saveSchedule);
+  const on = (id, event, handler) => {
+    const el = $(id);
+    if (el) el.addEventListener(event, handler);
+  };
 
-  $("auditScore").addEventListener("input", e => {
-    $("auditScoreNumber").value = e.target.value;
-    $("auditScoreOutput").textContent = `${e.target.value}%`;
+  on("createAudit", "click", () => openAddAudit());
+  on("scheduleAudit", "click", () => openScheduleModal());
+  on("closeAuditModal", "click", closeAddAudit);
+  on("cancelAudit", "click", closeAddAudit);
+  on("closeDetailsModal", "click", closeDetails);
+  on("addAuditAction", "click", () => openAuditActionModal(selectedAudit));
+  on("closeScheduleModal", "click", closeScheduleModal);
+  on("cancelSchedule", "click", closeScheduleModal);
+  on("auditForm", "submit", saveAudit);
+  on("scheduleForm", "submit", saveSchedule);
+
+  on("auditScore", "input", e => {
+    const n=$("auditScoreNumber"), o=$("auditScoreOutput");
+    if(n) n.value=e.target.value;
+    if(o) o.textContent=`${e.target.value}%`;
   });
-  $("auditScoreNumber").addEventListener("input", e => {
-    let value = Math.max(0, Math.min(100, Number(e.target.value || 0)));
-    e.target.value = value;
-    $("auditScore").value = value;
-    $("auditScoreOutput").textContent = `${value}%`;
+  on("auditScoreNumber", "input", e => {
+    let value=Math.max(0,Math.min(100,Number(e.target.value||0)));
+    e.target.value=value;
+    const slider=$("auditScore"), output=$("auditScoreOutput");
+    if(slider) slider.value=value;
+    if(output) output.textContent=`${value}%`;
   });
 
-  $("officeFilter").addEventListener("change", render);
-  $("historyOfficeFilter").addEventListener("change", render);
-  $("scheduleOfficeFilter").addEventListener("change", render);
-  $("trendTopicFilter").addEventListener("change", renderTrend);
-  $("scheduleType").addEventListener("change", () => {
-    const type = AUDIT_TYPES.find(t => t.id === $("scheduleType").value);
-    if (type) $("scheduleFrequency").value = type.frequency;
+  on("officeFilter","change",render);
+  on("historyOfficeFilter","change",render);
+  on("scheduleOfficeFilter","change",render);
+  on("trendTopicFilter","change",renderTrend);
+  on("scheduleType","change",()=>{
+    const type=AUDIT_TYPES.find(t=>t.id===$("scheduleType").value);
+    if(type && $("scheduleFrequency")) $("scheduleFrequency").value=type.frequency;
   });
-  $("auditType").addEventListener("change", () => {
-    const type = AUDIT_TYPES.find(t => t.id === $("auditType").value);
-    $("auditNotes").placeholder = type
+  on("auditType","change",()=>{
+    const type=AUDIT_TYPES.find(t=>t.id===$("auditType").value);
+    if($("auditNotes")) $("auditNotes").placeholder=type
       ? `Record ${type.label.toLowerCase()} improvements required, future changes, observations or follow-up notes…`
       : "Record improvements required, future changes, observations or follow-up notes…";
   });

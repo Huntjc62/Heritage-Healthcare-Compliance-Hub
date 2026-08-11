@@ -1,10 +1,12 @@
-import {db,storage} from "./firebase.js";
+import {db,app} from "./firebase.js";
 import {collection,getDocs,query,where,addDoc,updateDoc,doc,serverTimestamp} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+import {getStorage,ref,uploadBytes,getDownloadURL} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-storage.js";
 import {ref,uploadBytes,getDownloadURL} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-storage.js";
 import {setupShell,esc,formatDate,getOfficeName} from "./common.js";
 
 let profile,all=[];
 const $=id=>document.getElementById(id);
+const storage=getStorage(app);
 
 setupShell(null,async p=>{
   profile=p;
