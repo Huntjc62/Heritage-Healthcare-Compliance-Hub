@@ -1,51 +1,58 @@
-# Heritage Compliance Hub — V1
+# Heritage Compliance Hub V1 — Full Navigation Package
 
-## Included
+This package replaces the earlier V1 and gives every item in the sidebar a working page.
 
-- Firebase email/password login
-- Franchisor / Head Office role
-- Franchisee role
-- Role-based dashboards
-- Network office overview
-- Individual franchise dashboard
-- Audit list
-- Monthly compliance audit
-- Documentation, Staff, Compliance and Marketing sections
-- Compliant / Partial / Non-compliant / N/A answers
-- Automatic scoring
-- Firestore security rules
+## Pages
 
-## Firebase configuration
+- Dashboard
+- Audits
+- Actions
+- Evidence
+- Reports
+- Offices (Head Office only)
+- Users (Head Office only)
 
-The project is already configured with the Firebase Web App configuration supplied for:
+## Firebase
 
-heritage-compliance-hub
+The supplied Heritage Compliance Hub Firebase Web App configuration is already included.
 
-You should still review Firebase Authentication, Firestore Security Rules, App Check, hosting, privacy and data governance before using real operational or care information.
+Enable:
+1. Authentication → Email/Password
+2. Firestore Database
+3. Publish `firestore.rules`
 
-## Firebase setup
+## Firestore collections
 
-1. Open Firebase Console.
-2. Open the `heritage-compliance-hub` project.
-3. Enable Authentication → Email/Password.
-4. Create a Cloud Firestore database.
-5. Publish `firestore.rules`.
-6. Create office documents using `firestore.seed.json` as a guide.
-7. Create Authentication users.
-8. For every Authentication user, create `/users/{UID}` in Firestore.
-9. Use `role: "franchisor"` for Head Office.
-10. Use `role: "franchisee"` for franchise users.
-11. Franchise users must have an `officeId` matching an `/offices/{officeId}` document.
+- `users`
+- `offices`
+- `audits`
+- `actions`
+- `evidence`
+
+## User profiles
+
+Head Office:
+```text
+name: Head Office Admin
+email: your@email.com
+role: franchisor
+officeId: null
+```
+
+Franchisee:
+```text
+name: Birmingham South Manager
+email: manager@email.com
+role: franchisee
+officeId: birmingham-south
+```
+
+The role values are case-sensitive. Use lowercase `franchisor` and `franchisee`.
+
+## Important
+
+The Users page creates the Firestore profile only. It does not create a Firebase Authentication account. Create the login first in Firebase Authentication, copy its UID, then create the matching profile in the Users page.
 
 ## Running
 
-Use VS Code with Live Server or GitHub Pages. Do not open the files directly with `file://`, because the project uses ES modules.
-
-## First test
-
-Create:
-- One Head Office Authentication user + Firestore profile with `role: franchisor`
-- One Birmingham South Authentication user + Firestore profile with `role: franchisee` and `officeId: birmingham-south`
-- One `offices/birmingham-south` document
-
-Log in as Head Office first, create the demo audit, then sign in as the Birmingham South franchisee and complete it.
+Use VS Code Live Server or GitHub Pages. Do not open the HTML directly using `file://`.

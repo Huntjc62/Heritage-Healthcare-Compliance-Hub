@@ -1,58 +1,32 @@
-import { auth, db } from "./firebase.js";
-import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
-import { doc, getDoc, collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
-
-const loading=document.getElementById("appLoading"), app=document.getElementById("app"), errorBox=document.getElementById("dashboardError");
-let profile;
-function showError(m){errorBox.textContent=m;errorBox.classList.remove("hidden")}
-function pct(v){return typeof v==="number"?`${Math.round(v)}%`:"—"}
-function status(score){if(score>=90)return '<span class="status good">Excellent</span>';if(score>=80)return '<span class="status warning">Needs attention</span>';return '<span class="status danger">Requires action</span>'}
-document.getElementById("logoutButton").addEventListener("click",()=>signOut(auth));
-
-onAuthStateChanged(auth,async user=>{
- if(!user)return location.href="index.html";
- try{
-  const s=await getDoc(doc(db,"users",user.uid));
-  if(!s.exists()){showError("Your Firebase Authentication account has no matching users document.");loading.classList.add("hidden");app.classList.remove("hidden");return}
-  profile=s.data();
-  document.getElementById("userName").textContent=profile.name||user.email;
-  document.getElementById("userRole").textContent=profile.role==="franchisor"?"Head Office":"Franchisee";
-  document.getElementById("userAvatar").textContent=(profile.name||user.email).charAt(0).toUpperCase();
-  document.getElementById("roleLabel").textContent=profile.role==="franchisor"?"HEAD OFFICE":"FRANCHISE DASHBOARD";
-  document.getElementById("pageTitle").textContent=profile.role==="franchisor"?"Network overview":"Your compliance dashboard";
-  if(profile.role==="franchisor")await loadHeadOffice();else await loadFranchise();
-  loading.classList.add("hidden");app.classList.remove("hidden");
- }catch(e){console.error(e);showError("Dashboard could not load. Check your Firestore data and Security Rules.");loading.classList.add("hidden");app.classList.remove("hidden")}
+import {db} from "./firebase.js";
+import {collection,getDocs,query,where,doc,getDoc} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+import {setupShell,esc,scoreStatus,formatDate} from "./common.js";
+const pct=v=>typeof v==="number"?Math.round(v)+"%":"—";
+setupShell(null,async profile=>{
+ if(profile.role==="franchisor") await headOffice(profile); else await franchise(profile);
 });
-
-async function loadFranchise(){
+async function franchise(profile){
  document.getElementById("franchiseView").classList.remove("hidden");
- const officeId=profile.officeId;if(!officeId){showError("Your user profile needs an officeId.");return}
- const os=await getDoc(doc(db,"offices",officeId));if(!os.exists()){showError("Your assigned office could not be found.");return}
- const o=os.data();
- document.getElementById("officeName").textContent=o.name||"Your Franchise";
+ if(!profile.officeId){throw new Error("Your user profile needs an officeId.");}
+ const os=await getDoc(doc(db,"offices",profile.officeId)); if(!os.exists())throw new Error("Your assigned office could not be found.");
+ const o=os.data(); document.getElementById("officeName").textContent=o.name||profile.officeId;
  document.getElementById("officeScore").textContent=pct(o.complianceScore);
- document.getElementById("documentationScore").textContent=pct(o.scores?.documentation);
- document.getElementById("staffScore").textContent=pct(o.scores?.staff);
- document.getElementById("complianceScore").textContent=pct(o.scores?.compliance);
- document.getElementById("marketingScore").textContent=pct(o.scores?.marketing);
- const as=await getDocs(query(collection(db,"audits"),where("officeId","==",officeId)));
- const audits=as.docs.map(d=>({id:d.id,...d.data()})).slice(0,5);
- document.getElementById("franchiseAudits").innerHTML=audits.length?audits.map(a=>`<div class="list-row"><div><strong>${a.title||"Compliance audit"}</strong><small>${a.status||"Assigned"} · ${a.score!=null?pct(a.score):"Not completed"}</small></div><span class="status ${a.status==="completed"?"good":"warning"}">${a.status||"assigned"}</span></div>`).join(""):'<div class="empty-state">No audits have been assigned yet.</div>';
- const acts=await getDocs(query(collection(db,"actions"),where("officeId","==",officeId)));
- const actions=acts.docs.map(d=>({id:d.id,...d.data()})).filter(a=>a.status!=="completed").slice(0,5);
+ ["documentation","staff","compliance","marketing"].forEach(k=>document.getElementById(k+"Score").textContent=pct(o.scores?.[k]));
+ const [aSnap,xSnap]=await Promise.all([getDocs(query(collection(db,"audits"),where("officeId","==",profile.officeId))),getDocs(query(collection(db,"actions"),where("officeId","==",profile.officeId)))]);
+ const audits=aSnap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0)).slice(0,5);
+ const actions=xSnap.docs.map(d=>({id:d.id,...d.data()})).filter(a=>a.status!=="completed").slice(0,5);
  document.getElementById("actionBadge").textContent=actions.length;
- document.getElementById("franchiseActions").innerHTML=actions.length?actions.map(a=>`<div class="list-row"><div><strong>${a.title||"Action"}</strong><small>Due ${a.dueDate||"—"}</small></div><span class="priority ${a.priority||"medium"}">${a.priority||"medium"}</span></div>`).join(""):'<div class="empty-state">No open actions. Great work.</div>';
+ document.getElementById("franchiseAudits").innerHTML=audits.length?audits.map(a=>`<div class="list-row"><div><strong>${esc(a.title||"Compliance audit")}</strong><small>${esc(a.status||"Assigned")} · ${a.score!=null?pct(a.score):"Not completed"}</small></div>${a.status==="completed"?'<span class="status good">Complete</span>':'<span class="status warning">Assigned</span>'}</div>`).join(""):'<div class="empty-state">No audits assigned yet.</div>';
+ document.getElementById("franchiseActions").innerHTML=actions.length?actions.map(a=>`<div class="list-row"><div><strong>${esc(a.title||"Action")}</strong><small>Due ${esc(a.dueDate||"—")}</small></div><span class="priority ${esc(a.priority||"medium")}">${esc(a.priority||"medium")}</span></div>`).join(""):'<div class="empty-state">No open actions. Great work.</div>';
 }
-
-async function loadHeadOffice(){
+async function headOffice(){
  document.getElementById("headOfficeView").classList.remove("hidden");
- document.getElementById("officesNav").classList.remove("hidden");document.getElementById("usersNav").classList.remove("hidden");
- const [os,us,as]=await Promise.all([getDocs(collection(db,"offices")),getDocs(collection(db,"users")),getDocs(query(collection(db,"actions"),where("status","!=","completed")))]);
- const offices=os.docs.map(d=>({id:d.id,...d.data()})),users=us.docs.map(d=>({id:d.id,...d.data()})),actions=as.docs.map(d=>({id:d.id,...d.data()}));
- const scores=offices.map(o=>Number(o.complianceScore)).filter(n=>!Number.isNaN(n));const avg=scores.length?scores.reduce((a,b)=>a+b,0)/scores.length:0;
+ const [oSnap,uSnap,aSnap]=await Promise.all([getDocs(collection(db,"offices")),getDocs(collection(db,"users")),getDocs(collection(db,"actions"))]);
+ const offices=oSnap.docs.map(d=>({id:d.id,...d.data()}));const users=uSnap.docs.map(d=>d.data());const actions=aSnap.docs.map(d=>d.data()).filter(a=>a.status!=="completed");
+ const scores=offices.map(o=>Number(o.complianceScore)).filter(Number.isFinite),avg=scores.length?scores.reduce((a,b)=>a+b,0)/scores.length:0;
  document.getElementById("networkScore").textContent=pct(avg);document.getElementById("officeCount").textContent=offices.length;document.getElementById("userCount").textContent=users.length;document.getElementById("openActionCount").textContent=actions.length;
  const today=new Date().toISOString().slice(0,10);document.getElementById("overdueActionCount").textContent=actions.filter(a=>a.dueDate&&a.dueDate<today).length;
  offices.sort((a,b)=>(b.complianceScore||0)-(a.complianceScore||0));
- document.getElementById("officeTableBody").innerHTML=offices.length?offices.map(o=>`<tr><td><strong>${o.name||"Unnamed office"}</strong><small>${o.location||""}</small></td><td><strong>${pct(o.complianceScore)}</strong></td><td>${o.auditCompletion??"—"}%</td><td>${o.openActions??"—"}</td><td>${status(o.complianceScore||0)}</td></tr>`).join(""):'<tr><td colspan="5" class="empty-state">No offices have been added yet.</td></tr>';
+ const rows=[];for(const o of offices){const oa=actions.filter(a=>a.officeId===o.id).length;rows.push(`<tr><td><strong>${esc(o.name||o.id)}</strong><small>${esc(o.location||"")}</small></td><td><strong>${pct(o.complianceScore)}</strong></td><td>${o.auditCompletion??"—"}%</td><td>${oa}</td><td>${scoreStatus(o.complianceScore)}</td></tr>`)}
+ document.getElementById("officeTableBody").innerHTML=rows.join("")||'<tr><td colspan="5" class="empty-state">No offices have been added.</td></tr>';
 }

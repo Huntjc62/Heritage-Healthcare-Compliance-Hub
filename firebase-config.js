@@ -1,7 +1,3 @@
-// Heritage Compliance Hub Firebase configuration
-// This file uses the Firebase Web SDK directly from Google's CDN.
-// The values below are your Firebase web app configuration.
-
 export const firebaseConfig = {
   apiKey: "AIzaSyBsEYgAqhNglr7bl1f_QIcdutBu9_FaR0Y",
   authDomain: "heritage-compliance-hub.firebaseapp.com",
