@@ -137,3 +137,7 @@ All page/module references to the shared role logic now use version `20260811-ho
 
 ## Final Head Office Staff role fix
 The Dashboard independently reads the signed-in Firebase Auth UID's `users/{uid}` document and classifies `Head Office Staff` as Head Office before choosing the dashboard branch. It also updates the visible role label to `Head Office`. This prevents the `officeId` franchisee error from occurring for Head Office Staff accounts.
+
+
+## Evidence temporarily removed
+Evidence has been removed from the site navigation for all roles. The old evidence URL redirects to the dashboard so users cannot access the retired Evidence interface.
