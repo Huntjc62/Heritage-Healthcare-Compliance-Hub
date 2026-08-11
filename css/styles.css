@@ -18,3 +18,5 @@
 @media(max-width:900px){.schedule-list{grid-template-columns:1fr}.schedule-summary-grid{grid-template-columns:repeat(2,1fr)}.schedule-meta{grid-template-columns:1fr}}
 @media(max-width:650px){.schedule-summary-grid{grid-template-columns:1fr}.panel-heading-actions{width:100%}.panel-heading-actions .btn{flex:1}.trend-chart{padding:4px}}
 .schedule-dashboard-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:11px}.schedule-dashboard-stat{background:#f6f8f9;border:1px solid #e1e8eb;border-radius:12px;padding:16px}.schedule-dashboard-stat span,.schedule-dashboard-stat small{display:block;color:#6d7981;font-size:10px}.schedule-dashboard-stat strong{display:block;font-size:25px;color:#173f59;margin:6px 0 2px}@media(max-width:800px){.schedule-dashboard-grid{grid-template-columns:repeat(2,1fr)}}@media(max-width:550px){.schedule-dashboard-grid{grid-template-columns:1fr}}
+
+.schedule-readonly-note{margin-top:14px;padding:11px 13px;border-radius:10px;background:var(--surface-alt,#f5f7fa);color:var(--muted,#667085);font-size:13px;border:1px solid var(--border,#e5e7eb)}

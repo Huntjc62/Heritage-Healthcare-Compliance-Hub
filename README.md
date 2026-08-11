@@ -83,3 +83,7 @@ These can be changed by Head Office.
 ## Important
 
 This is still an internal prototype/pilot build. Before network-wide rollout, tighten Firebase role security, add an audit trail, add evidence uploads, and test the workflow with a small number of offices.
+
+
+## Scheduling permissions
+Audit schedules are controlled by Head Office only. Franchisees have a read-only view of schedules for their own office and cannot create, edit, start, or delete schedules. Completed audits are also recorded by Head Office.
