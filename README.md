@@ -113,3 +113,27 @@ The Hub now supports the workflow:
 2. Publish `firestore.rules`.
 3. Publish `storage.rules` in Firebase Storage Rules.
 4. Test uploads with a small PDF/image before network rollout.
+
+
+## Audit loading fix
+This build normalises existing Firestore role values such as `Franchisor` / `Franchisee` to the expected lowercase values in the app. Firestore rules also accept both legacy and lowercase role values. The Audits page now reads only the franchisee's own office document instead of attempting to read the entire offices collection.
+
+
+## Audits clean build
+The Audits page has been rebuilt with a self-contained, defensive implementation to avoid the previous module initialisation/loading failure. Existing Firestore collections and data remain compatible.
+
+
+## Audits standalone replacement
+The Audits page has been rebuilt as a standalone Firestore module. It does not initialise Firebase Storage, Actions or Evidence code. It only depends on Firebase Authentication, Firestore and the existing common shell. The script URL has a cache-busting version query.
+
+
+## Head Office Staff role
+The Firestore role value `Head Office Staff` is now treated as the same application role as `franchisor`. It receives the same Head Office dashboard, Audits, Actions, Evidence, Reports, Offices and Users access. The original Firestore value is retained, so the account can still be identified as Head Office Staff in the Users collection.
+
+
+## Cache-busted Head Office Staff build
+All page/module references to the shared role logic now use version `20260811-ho-staff-v2` so GitHub Pages/browser caching cannot continue serving the old role mapping. `Head Office Staff` is explicitly normalised to the Head Office/franchisor application role.
+
+
+## Final Head Office Staff role fix
+The Dashboard independently reads the signed-in Firebase Auth UID's `users/{uid}` document and classifies `Head Office Staff` as Head Office before choosing the dashboard branch. It also updates the visible role label to `Head Office`. This prevents the `officeId` franchisee error from occurring for Head Office Staff accounts.

@@ -1,6 +1,6 @@
 import {db} from "./firebase.js";
 import {collection,getDocs,query,where,addDoc,updateDoc,doc,serverTimestamp} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
-import {setupShell,esc,formatDate,getOfficeName} from "./common.js";
+import {setupShell,esc,formatDate,getOfficeName} from "./common.js?v=20260811-final-role-fix";
 
 let profile,all=[];
 const $=id=>document.getElementById(id);
