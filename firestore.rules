@@ -27,14 +27,19 @@ service cloud.firestore {
     }
     match /actions/{id} {
       allow read: if headOffice() || ownOffice(resource.data.officeId);
-      allow create: if headOffice() || ownOffice(request.resource.data.officeId);
-      allow update: if headOffice() || ownOffice(resource.data.officeId);
+      allow create: if headOffice();
+      allow update: if headOffice() || (
+        ownOffice(resource.data.officeId) &&
+        request.resource.data.officeId == resource.data.officeId &&
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(["status","completedAt","completedBy","updatedAt"])
+      );
       allow delete: if headOffice();
     }
     match /evidence/{id} {
       allow read: if headOffice() || ownOffice(resource.data.officeId);
       allow create: if headOffice() || ownOffice(request.resource.data.officeId);
-      allow update: if headOffice() || ownOffice(resource.data.officeId);
+      allow update: if headOffice();
+      allow delete: if headOffice();
       allow delete: if headOffice();
     }
   }

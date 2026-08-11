@@ -87,3 +87,29 @@ This is still an internal prototype/pilot build. Before network-wide rollout, ti
 
 ## Scheduling permissions
 Audit schedules are controlled by Head Office only. Franchisees have a read-only view of schedules for their own office and cannot create, edit, start, or delete schedules. Completed audits are also recorded by Head Office.
+
+
+## Phase 2 — Actions, Evidence and Audit Follow-up
+
+The Hub now supports the workflow:
+
+**Audit → Finding → Action → Evidence → Head Office verification → Re-audit**
+
+### Actions
+- Head Office creates actions and can link them to an audit.
+- Actions include finding, required change, office, owner, due date, priority and status.
+- Franchisees can submit an action as complete.
+- Head Office approves or re-opens the action.
+
+### Evidence
+- Franchisees and Head Office can upload real files to Firebase Storage.
+- Supported examples: PDF, Word, Excel and images.
+- Evidence can be linked to an action.
+- Uploaded evidence is initially `awaiting-review`.
+- Head Office can approve or re-open evidence.
+
+### Firebase setup
+1. Enable **Storage** in Firebase Console.
+2. Publish `firestore.rules`.
+3. Publish `storage.rules` in Firebase Storage Rules.
+4. Test uploads with a small PDF/image before network rollout.

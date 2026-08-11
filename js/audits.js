@@ -43,6 +43,7 @@ function bindEvents() {
   $("closeAuditModal").addEventListener("click", closeAddAudit);
   $("cancelAudit").addEventListener("click", closeAddAudit);
   $("closeDetailsModal").addEventListener("click", closeDetails);
+  $("addAuditAction").addEventListener("click", () => openAuditActionModal(selectedAudit));
   $("closeScheduleModal").addEventListener("click", closeScheduleModal);
   $("cancelSchedule").addEventListener("click", closeScheduleModal);
   $("auditForm").addEventListener("submit", saveAudit);
@@ -166,7 +167,7 @@ function render() {
 
   document.querySelectorAll("[data-view-audit]").forEach(btn => btn.addEventListener("click", () => openDetails(btn.dataset.viewAudit)));
   document.querySelectorAll("[data-complete-audit]").forEach(btn => btn.addEventListener("click", () => openAddAudit(btn.dataset.office, btn.dataset.type)));
-  document.querySelectorAll("[data-start-schedule]").forEach(btn => btn.addEventListener("click", () => setScheduleStatus(btn.dataset.id, "in-progress")));
+
 }
 
 function renderNetworkSummary() {
@@ -244,12 +245,13 @@ function renderSchedules(officeId) {
   for (const office of targetOffices) {
     for (const type of AUDIT_TYPES) {
       const s = getEffectiveSchedule(office.id, type.id);
-      rows.push(`<article class="schedule-card"><div class="schedule-card-main"><div><p class="eyebrow">${esc(type.label)}</p><h3>${esc(office.name || office.id)}</h3></div><span class="schedule-status ${s.status}">${statusLabel(s.status)}</span></div><div class="schedule-meta"><span><b>Frequency</b>${esc(frequencyLabel(s.frequency))}</span><span><b>Next due</b>${s.nextDueDate ? formatDate(s.nextDueDate) : "—"}</span><span><b>Last completed</b>${s.lastCompletedDate ? formatDate(s.lastCompletedDate) : "Not yet audited"}</span></div><div class="schedule-actions">${profile.role === "franchisor" ? `<button class="btn secondary small" data-start-schedule="${esc(s.id || "")}" ${s.status === "in-progress" || !s.id ? "disabled" : ""}>${s.status === "in-progress" ? "In progress" : "Start audit"}</button><button class="btn secondary small" data-edit-schedule="${esc(s.id || "")}" data-office="${esc(office.id)}" data-type="${esc(type.id)}">Manage</button>` : ""}<button class="btn primary small" data-complete-audit="${esc(office.id)}" data-type="${esc(type.id)}">Add completed audit</button></div></article>`);
+      rows.push(`<article class="schedule-card"><div class="schedule-card-main"><div><p class="eyebrow">${esc(type.label)}</p><h3>${esc(office.name || office.id)}</h3></div><span class="schedule-status ${s.status}">${statusLabel(s.status)}</span></div><div class="schedule-meta"><span><b>Frequency</b>${esc(frequencyLabel(s.frequency))}</span><span><b>Next due</b>${s.nextDueDate ? formatDate(s.nextDueDate) : "—"}</span><span><b>Last completed</b>${s.lastCompletedDate ? formatDate(s.lastCompletedDate) : "Not yet audited"}</span></div><div class="schedule-actions">${profile.role === "franchisor" ? `<button class="btn secondary small" data-edit-schedule="${esc(s.id || "")}" data-office="${esc(office.id)}" data-type="${esc(type.id)}">Manage</button><button class="btn primary small" data-complete-audit="${esc(office.id)}" data-type="${esc(type.id)}">Add completed audit</button>` : ""}</div></article>`);
     }
   }
   $("scheduleList").innerHTML = rows.length ? rows.join("") : `<div class="empty-state">No audit schedules yet.</div>`;
 
   document.querySelectorAll("[data-edit-schedule]").forEach(btn => btn.addEventListener("click", () => openScheduleModal(btn.dataset.office, btn.dataset.type, btn.dataset.id)));
+  document.querySelectorAll("[data-complete-audit]").forEach(btn => btn.addEventListener("click", () => openAddAudit(btn.dataset.office, btn.dataset.type)));
 }
 
 function getEffectiveSchedule(officeId, typeId) {
@@ -316,6 +318,7 @@ async function setScheduleStatus(scheduleId, status) {
 }
 
 function openAddAudit(officeId = null, typeId = null) {
+  if (profile.role !== "franchisor") return showMessage("Only Head Office can record completed audits.", true);
   if (!offices.length) return showMessage("Create a franchise office first, then add an audit.", true);
   $("auditModal").classList.remove("hidden");
   $("auditOffice").value = officeId || (profile.role === "franchisee" ? profile.officeId : offices[0].id);
@@ -323,7 +326,7 @@ function openAddAudit(officeId = null, typeId = null) {
   $("completedBy").value = profile.name || "";
   $("completedDate").value = today();
   $("auditScore").value = 0; $("auditScoreNumber").value = 0; $("auditScoreOutput").textContent = "0%";
-  $("auditNotes").value = "";
+  $("auditNotes").value = ""; $("auditFinding").value = "";
   $("saveAuditButton").disabled = false;
 }
 function closeAddAudit() { $("auditModal").classList.add("hidden"); }
@@ -346,12 +349,16 @@ function openDetails(id) {
   $("detailsDate").textContent = formatDate(selectedAudit.completedDate);
   $("detailsChange").textContent = change == null ? "First recorded audit" : `${change > 0 ? "+" : ""}${change}% vs previous`;
   $("detailsNotes").textContent = selectedAudit.notes || "No future changes or notes recorded.";
+  const findingBox = $("detailsFinding");
+  if (findingBox) findingBox.textContent = selectedAudit.finding || "No specific finding recorded.";
+  await renderAuditActions(selectedAudit.id);
   $("detailsModal").classList.remove("hidden");
 }
 function closeDetails() { $("detailsModal").classList.add("hidden"); selectedAudit = null; }
 
 async function saveAudit(event) {
   event.preventDefault();
+  if (profile.role !== "franchisor") return showMessage("Only Head Office can record completed audits.", true);
   const officeId = $("auditOffice").value;
   const typeId = $("auditType").value;
   const type = AUDIT_TYPES.find(t => t.id === typeId);
@@ -360,13 +367,14 @@ async function saveAudit(event) {
   const completedDate = $("completedDate").value;
   const score = Math.max(0, Math.min(100, Number($("auditScoreNumber").value || 0)));
   const notes = $("auditNotes").value.trim();
+  const finding = $("auditFinding").value.trim();
   if (!office || !type || !completedBy || !completedDate) return showMessage("Please complete all required audit fields.", true);
 
   $("saveAuditButton").disabled = true; $("saveAuditButton").textContent = "Saving…";
   try {
     await addDoc(collection(db, "audits"), {
       officeId, officeName: office.name || officeId, auditType: type.id, auditTypeName: type.label,
-      title: `${type.label} Audit`, score, completedBy, completedDate, notes, status: "completed",
+      title: `${type.label} Audit`, score, completedBy, completedDate, notes, finding, status: "completed",
       createdBy: auth.currentUser?.uid || "", createdAt: serverTimestamp(), completedAt: serverTimestamp()
     });
 
@@ -504,6 +512,34 @@ function renderHistory() {
   document.querySelectorAll("#auditHistoryList [data-view-audit]").forEach(btn => btn.addEventListener("click", () => openDetails(btn.dataset.viewAudit)));
 }
 
+
+async function renderAuditActions(auditId){
+  const snap=await getDocs(query(collection(db,"actions"),where("auditId","==",auditId)));
+  const rows=snap.docs.map(d=>({id:d.id,...d.data()}));
+  $("auditActionList").innerHTML=rows.length?rows.map(a=>`<article class="action-card compact">
+    <div class="action-main"><div class="action-title-row"><h4>${esc(a.title||"Action")}</h4><span class="priority ${esc(a.priority||"medium")}">${esc(a.priority||"medium")}</span></div>
+    ${a.finding?`<div class="finding-inline"><strong>Finding:</strong> ${esc(a.finding)}</div>`:""}<p>${esc(a.description||"")}</p>
+    <div class="action-meta"><span>Owner: ${esc(a.owner||"—")}</span><span>Due: ${esc(a.dueDate||"—")}</span><span>Status: ${esc(a.status||"open")}</span></div></div></article>`).join(""):'<div class="empty-state">No actions linked to this audit yet.</div>';
+}
+async function openAuditActionModal(audit){
+  if(!audit || profile.role!=="franchisor") return;
+  const title=prompt("Action title (what needs to happen?)");
+  if(!title) return;
+  const finding=prompt("Finding / issue identified");
+  const owner=prompt("Action owner (e.g. Franchise Manager)");
+  const dueDate=prompt("Due date (YYYY-MM-DD)");
+  const priority=(prompt("Priority: high, medium or low","medium")||"medium").toLowerCase();
+  const description=prompt("Action details / required change")||"";
+  const office=offices.find(o=>o.id===audit.officeId);
+  await addDoc(collection(db,"actions"),{
+    title:title.trim(),finding:(finding||"").trim(),owner:(owner||"").trim(),dueDate:(dueDate||"").trim(),
+    priority:["high","medium","low"].includes(priority)?priority:"medium",description:description.trim(),
+    status:"open",officeId:audit.officeId,officeName:office?.name||audit.officeName||audit.officeId,
+    auditId:audit.id,auditTypeName:audit.auditTypeName||audit.auditType,createdAt:serverTimestamp(),createdBy:profile.uid
+  });
+  await renderAuditActions(audit.id);
+  showMessage("Action linked to the audit.");
+}
 function average(values) { const nums = values.map(Number).filter(Number.isFinite); return nums.length ? nums.reduce((a,b) => a+b, 0) / nums.length : null; }
 function frequencyMonths(id) { return FREQUENCIES.find(f => f.id === id)?.months || 3; }
 function frequencyLabel(id) { return FREQUENCIES.find(f => f.id === id)?.label || "Quarterly"; }

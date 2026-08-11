@@ -198,6 +198,10 @@
         <input id="auditScoreNumber" type="number" min="0" max="100" value="0" required>
       </label>
 
+      <label>Key finding / issue identified (optional)
+        <textarea id="auditFinding" rows="3" placeholder="What did the audit identify that needs attention?"></textarea>
+      </label>
+
       <label>Future changes / notes
         <textarea id="auditNotes" rows="5" placeholder="Record improvements required, future changes, observations or follow-up notes…"></textarea>
       </label>
@@ -252,9 +256,14 @@
       <div><span>Date completed</span><strong id="detailsDate">—</strong></div>
       <div><span>Movement</span><strong id="detailsChange">—</strong></div>
     </div>
+    <div class="audit-notes-box"><p class="eyebrow">KEY FINDING</p><p id="detailsFinding">No specific finding recorded.</p></div>
     <div class="audit-notes-box">
-      <p class="eyebrow">FUTURE CHANGES / NOTES</p>
+      <p class="eyebrow">FUTURE CHANGES / NOTES</p
       <p id="detailsNotes">No notes recorded.</p>
+    </div>
+    <div class="audit-actions-box">
+      <div class="panel-heading"><div><p class="eyebrow">FOLLOW-UP ACTIONS</p><h4>Actions linked to this audit</h4></div><button id="addAuditAction" class="btn primary small">+ Add action</button></div>
+      <div id="auditActionList" class="action-list compact"></div>
     </div>
   </div>
 </div>
