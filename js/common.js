@@ -24,7 +24,13 @@ export function setupShell(requiredRole=null, onReady=()=>{}) {
       document.querySelectorAll("[data-logout]").forEach(b=>b.addEventListener("click",()=>signOut(auth)));
       if(loading) loading.classList.add("hidden");
       if(app) app.classList.remove("hidden");
-      await onReady(profile);
+      try {
+        await onReady(profile);
+      } catch (readyError) {
+        console.error("Page initialisation failed:", readyError);
+        const box=document.querySelector(".page-error");
+        if(box){box.textContent=readyError.message || "This page could not be loaded.";box.classList.remove("hidden");}
+      }
     }catch(e){
       console.error(e);
       if(loading) loading.classList.add("hidden");

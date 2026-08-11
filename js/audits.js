@@ -32,9 +32,23 @@ const today = () => new Date().toISOString().slice(0, 10);
 
 setupShell(null, async p => {
   profile = p;
-  bindEvents();
-  await loadOffices();
-  await Promise.all([loadAudits(), loadSchedules()]);
+  try {
+    bindEvents();
+    await loadOffices();
+    await Promise.all([loadAudits(), loadSchedules()]);
+    render();
+  } catch (error) {
+    console.error("Audits page failed to load:", error);
+    const loading = $("appLoading");
+    const app = $("app");
+    if (loading) loading.classList.add("hidden");
+    if (app) app.classList.remove("hidden");
+    const box = document.querySelector(".page-error");
+    if (box) {
+      box.textContent = `Audits could not load: ${error.message}`;
+      box.classList.remove("hidden");
+    }
+  }
 });
 
 function bindEvents() {
@@ -173,7 +187,6 @@ function render() {
     : `<div class="empty-state"><strong>No completed audits yet.</strong><div>${profile.role === "franchisor" ? "Click “+ Add an audit” to record the first audit." : "Your Head Office team will add completed audits here."}</div></div>`;
 
   document.querySelectorAll("[data-view-audit]").forEach(btn => btn.addEventListener("click", () => openDetails(btn.dataset.viewAudit)));
-  document.querySelectorAll("[data-complete-audit]").forEach(btn => btn.addEventListener("click", () => openAddAudit(btn.dataset.office, btn.dataset.type)));
 
 }
 

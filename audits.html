@@ -258,7 +258,7 @@
     </div>
     <div class="audit-notes-box"><p class="eyebrow">KEY FINDING</p><p id="detailsFinding">No specific finding recorded.</p></div>
     <div class="audit-notes-box">
-      <p class="eyebrow">FUTURE CHANGES / NOTES</p
+      <p class="eyebrow">FUTURE CHANGES / NOTES</p>
       <p id="detailsNotes">No notes recorded.</p>
     </div>
     <div class="audit-actions-box">
@@ -270,6 +270,19 @@
 
 </main>
 </div>
-<script type="module" src="js/audits.js"></script>
+<script>
+window.addEventListener("error", function () {
+  const loading = document.getElementById("appLoading");
+  const app = document.getElementById("app");
+  const error = document.querySelector(".page-error");
+  if (loading) loading.classList.add("hidden");
+  if (app) app.classList.remove("hidden");
+  if (error) {
+    error.textContent = "The Audits page could not load. Please refresh the page. If the problem continues, check the browser console.";
+    error.classList.remove("hidden");
+  }
+});
+</script>
+<script type="module" src="js/audits.js?v=20260811-2"></script>
 </body>
 </html>
