@@ -2,7 +2,7 @@ import { db, auth } from "./firebase.js";
 import {
   collection, getDocs, query, where, doc, getDoc, addDoc, updateDoc, serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
-import { setupShell, esc, formatDate } from "./common.js?v=20260811-ho-staff-v2";
+import { setupShell, esc, formatDate } from "./common.js?v=20260811-final-role-fix";
 
 const TYPES = [
   { id: "marketing", label: "Marketing", frequency: "quarterly", months: 3 },
@@ -75,7 +75,9 @@ function modal(id, open) {
 setupShell(null, async userProfile => {
   profile = {
     ...userProfile,
-    role: String(userProfile?.role || "").toLowerCase()
+    role: isHeadOfficeRole(userProfile?.rawRole || userProfile?.role)
+      ? "franchisor"
+      : "franchisee"
   };
 
   try {

@@ -1,6 +1,6 @@
-import { db } from "./firebase.js";
+import { db, auth } from "./firebase.js";
 import { collection, getDocs, query, where, doc, getDoc } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
-import { setupShell, esc, scoreStatus, formatDate } from "./common.js?v=20260811-ho-staff-v2";
+import { setupShell, esc, scoreStatus, formatDate, isHeadOfficeRole } from "./common.js?v=20260811-final-role-fix";
 
 const REQUIRED = ["marketing", "staff", "documentation", "compliance"];
 const TOPICS = ["documentation", "staff", "compliance", "marketing", "quality-governance"];
@@ -10,8 +10,33 @@ const pct = v => Number.isFinite(Number(v)) ? `${Math.round(Number(v))}%` : "—
 const statusLabel = s => s === "in-progress" ? "In progress" : s.charAt(0).toUpperCase() + s.slice(1);
 
 setupShell(null, async profile => {
-  if (profile.role === "franchisor") await headOffice(profile);
-  else await franchise(profile);
+  // Independent role verification: do not rely solely on the shell's
+  // normalised role. This prevents a Head Office Staff user from ever
+  // falling into the franchisee branch and triggering an officeId error.
+  const uid = auth.currentUser?.uid;
+  if (!uid) throw new Error("No authenticated Firebase user was found.");
+
+  const userSnap = await getDoc(doc(db, "users", uid));
+  if (!userSnap.exists()) {
+    throw new Error(`No Firestore users document exists for Firebase UID ${uid}.`);
+  }
+
+  const rawRole = userSnap.data().role;
+  const headOffice =
+    isHeadOfficeRole(rawRole) ||
+    ["head office staff", "head office admin", "franchisor"].includes(
+      String(rawRole ?? "").trim().toLowerCase()
+    );
+
+  // Correct the visible role immediately.
+  document.querySelectorAll("[data-user-role]")
+    .forEach(el => el.textContent = headOffice ? "Head Office" : "Franchisee");
+
+  if (headOffice) {
+    await headOfficeView();
+  } else {
+    await franchise({ ...profile, role: "franchisee" });
+  }
 });
 
 function scheduleStatus(s) {
@@ -69,7 +94,7 @@ async function franchise(profile) {
   document.getElementById("franchiseActions").innerHTML = actions.slice(0, 5).map(a => `<div class="list-row"><div><strong>${esc(a.title || "Action")}</strong><small>Due ${esc(a.dueDate || "—")}</small></div><span class="priority ${esc(a.priority || "medium")}">${esc(a.priority || "medium")}</span></div>`).join("") || '<div class="empty-state">No open actions. Great work.</div>';
 }
 
-async function headOffice() {
+async function headOfficeView() {
   document.getElementById("headOfficeView").classList.remove("hidden");
   const [oSnap, uSnap, aSnap, xSnap, sSnap] = await Promise.all([
     getDocs(collection(db, "offices")), getDocs(collection(db, "users")), getDocs(collection(db, "audits")),

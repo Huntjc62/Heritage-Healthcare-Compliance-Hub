@@ -1,6 +1,6 @@
 import {db} from "./firebase.js";
 import {collection,getDocs,setDoc,doc,serverTimestamp} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
-import {setupShell,esc} from "./common.js?v=20260811-ho-staff-v2";
+import {setupShell,esc} from "./common.js?v=20260811-final-role-fix";
 let profiles=[];
 setupShell("franchisor",async()=>{newUser.onclick=open;closeUser.onclick=close;userForm.addEventListener("submit",save);await offices();await load();});
 async function offices(){const s=await getDocs(collection(db,"offices"));profileOffice.innerHTML='<option value="">Head Office / none</option>'+s.docs.map(d=>`<option value="${d.id}">${esc(d.data().name||d.id)}</option>`).join("");}

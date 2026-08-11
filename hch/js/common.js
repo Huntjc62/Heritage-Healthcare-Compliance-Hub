@@ -3,21 +3,34 @@ import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/
 import { doc, getDoc } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
 function normaliseRole(value) {
-  const role = String(value || "").trim().toLowerCase();
+  const role = String(value ?? "")
+    .replace(/\u00a0/g, " ")
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, " ");
 
-  // All of these are treated as Head Office in the application.
-  if (
-    role === "franchisor" ||
-    role === "head office" ||
-    role === "head office admin" ||
-    role === "head office staff" ||
-    role === "headoffice" ||
-    role === "head-office-staff"
-  ) return "franchisor";
+  const headOfficeRoles = new Set([
+    "franchisor",
+    "head office",
+    "head office admin",
+    "head office staff",
+    "head office user",
+    "head office manager",
+    "head office employee",
+    "headoffice",
+    "head-office",
+    "head-office-admin",
+    "head-office-staff"
+  ]);
 
+  if (headOfficeRoles.has(role)) return "franchisor";
   if (role === "franchisee") return "franchisee";
 
   return role;
+}
+
+export function isHeadOfficeRole(value) {
+  return normaliseRole(value) === "franchisor";
 }
 
 export function setupShell(requiredRole=null, onReady=()=>{}) {
@@ -47,13 +60,10 @@ export function setupShell(requiredRole=null, onReady=()=>{}) {
       // The Firestore role remains "Head Office Staff", but the application
       // normalises it to "franchisor", giving it identical access to the
       // existing Head Office Admin/franchisor role.
-      const recognisedHeadOfficeStaff =
-        String(rawProfile.role || "").trim().toLowerCase() === "head office staff";
-
       const profile = {
         ...rawProfile,
         rawRole: rawProfile.role,
-        role: recognisedHeadOfficeStaff ? "franchisor" : normaliseRole(rawProfile.role)
+        role: normaliseRole(rawProfile.role)
       };
 
       if (requiredRole && profile.role !== requiredRole) {
@@ -68,10 +78,9 @@ export function setupShell(requiredRole=null, onReady=()=>{}) {
 
       document.querySelectorAll("[data-user-role]")
         .forEach(e => {
-          e.textContent =
-            profile.role === "franchisor"
-              ? "Head Office"
-              : "Franchisee";
+          e.textContent = profile.role === "franchisor"
+            ? "Head Office"
+            : "Franchisee";
         });
 
       document.querySelectorAll("[data-user-avatar]")

@@ -133,3 +133,7 @@ The Firestore role value `Head Office Staff` is now treated as the same applicat
 
 ## Cache-busted Head Office Staff build
 All page/module references to the shared role logic now use version `20260811-ho-staff-v2` so GitHub Pages/browser caching cannot continue serving the old role mapping. `Head Office Staff` is explicitly normalised to the Head Office/franchisor application role.
+
+
+## Final Head Office Staff role fix
+The Dashboard independently reads the signed-in Firebase Auth UID's `users/{uid}` document and classifies `Head Office Staff` as Head Office before choosing the dashboard branch. It also updates the visible role label to `Head Office`. This prevents the `officeId` franchisee error from occurring for Head Office Staff accounts.
