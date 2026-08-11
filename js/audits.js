@@ -2,7 +2,7 @@ import { db, auth } from "./firebase.js";
 import {
   collection, getDocs, query, where, doc, getDoc, addDoc, updateDoc, serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
-import { setupShell, esc, formatDate } from "./common.js?v=20260811-final-role-fix";
+import { setupShell, esc, formatDate, isHeadOfficeRole } from "./common.js?v=20260811-final-role-fix";
 
 const TYPES = [
   { id: "marketing", label: "Marketing", frequency: "quarterly", months: 3 },
@@ -81,12 +81,20 @@ setupShell(null, async userProfile => {
   };
 
   try {
+    console.log("Heritage Compliance Hub Audits: initialising", {
+      uid: auth.currentUser?.uid || null,
+      email: auth.currentUser?.email || null,
+      role: profile.role,
+      rawRole: userProfile?.rawRole || userProfile?.role || null
+    });
+
     bindEvents();
     await loadOffices();
     await loadAudits();
     await loadSchedules();
     renderAll();
   } catch (error) {
+    console.error("Heritage Compliance Hub Audits startup error:", error);
     showError(`Audits could not load: ${error?.message || error}`);
   }
 });
