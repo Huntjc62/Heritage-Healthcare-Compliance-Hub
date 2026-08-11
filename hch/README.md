@@ -117,3 +117,7 @@ The Hub now supports the workflow:
 
 ## Audit loading fix
 This build normalises existing Firestore role values such as `Franchisor` / `Franchisee` to the expected lowercase values in the app. Firestore rules also accept both legacy and lowercase role values. The Audits page now reads only the franchisee's own office document instead of attempting to read the entire offices collection.
+
+
+## Audits clean build
+The Audits page has been rebuilt with a self-contained, defensive implementation to avoid the previous module initialisation/loading failure. Existing Firestore collections and data remain compatible.

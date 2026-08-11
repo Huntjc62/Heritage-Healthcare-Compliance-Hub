@@ -270,19 +270,6 @@
 
 </main>
 </div>
-<script>
-window.addEventListener("error", function () {
-  const loading = document.getElementById("appLoading");
-  const app = document.getElementById("app");
-  const error = document.querySelector(".page-error");
-  if (loading) loading.classList.add("hidden");
-  if (app) app.classList.remove("hidden");
-  if (error) {
-    error.textContent = "The Audits page could not load. Please refresh the page. If the problem continues, check the browser console.";
-    error.classList.remove("hidden");
-  }
-});
-</script>
-<script type="module" src="js/audits.js?v=20260811-2"></script>
+<script type="module" src="js/audits.js?v=20260811-clean"></script>
 </body>
 </html>
